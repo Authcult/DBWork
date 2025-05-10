@@ -1,54 +1,82 @@
 <template>
   <div id="app">
+    <div class="app-header">
+      <span class="title">医院管理系统</span>
+      <el-button v-if="isAuthenticated" type="danger" size="small" @click="handleLogout">
+        退出登录
+      </el-button>
+    </div>
     <router-view></router-view>
   </div>
 </template>
 
 <script setup>
-// No specific script needed for App.vue with just router-view
+import { useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus';
+import { ref, onMounted } from 'vue';
+
+const router = useRouter();
+const isAuthenticated = ref(false);
+
+onMounted(() => {
+  isAuthenticated.value = !!localStorage.getItem('token');
+});
+
+const handleLogout = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    await fetch('http://your-api-domain.com/auth/logout', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    // 无论接口是否成功，都清除本地状态
+    localStorage.removeItem('token');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('isAuthenticated');
+
+    ElMessage.success('已退出登录');
+    router.push('/login');
+  } catch (err) {
+    console.error(err);
+    ElMessage.error('退出失败');
+  }
+};
 </script>
 
-<style> /* Global styles */
+<style>
 html, body, #app {
   height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
-  /* box-sizing: border-box;
-  overflow-x: hidden; */
 }
 
-@media (min-width: 1920px) {
-  #app {
-    max-width: 1920px;
-    margin: 0 auto;
-  }
-}
-</style>
-
-<style scoped>
 #app {
-  background-image: url('/images/background.jpg'); /* Corrected path for public assets */
+  background-image: url('/images/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  width: 100%; /* Ensure #app takes full width */
-  height: 100%; /* Ensure #app takes full height */
-  display: flex; /* Add flex display */
-  align-items: center; /* Vertically center content */
-  justify-content: flex-start; /* Horizontally align content to left */
-  padding-left: 75px; /* Add left padding to move content slightly left */
-  /* min-height: 100vh; is also fine, height: 100% relies on parent having height */
+  display: flex;
+  flex-direction: column;
   font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
-/* Example of a global link style if not using a UI library's reset/base */
-a {
-  text-decoration: none;
-  color: inherit;
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

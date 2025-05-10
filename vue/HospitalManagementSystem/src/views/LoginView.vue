@@ -34,57 +34,77 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 
 const router = useRouter();
+
 const loginForm = ref({
   username: '',
   password: '',
   role: ''
 });
 
-const handleLogin = () => {
-  // TODO: Implement actual login logic with backend API
-  console.log('Login attempt:', loginForm.value);
-  if (loginForm.value.username && loginForm.value.password && loginForm.value.role) {
-    // Simulate successful login
-    ElMessage.success('登录成功！');
-    // Mock authentication and role storage
-    localStorage.setItem('userRole', loginForm.value.role);
-    localStorage.setItem('isAuthenticated', 'true');
+const handleLogin = async () => {
+  if (!loginForm.value.username || !loginForm.value.password || !loginForm.value.role) {
+    ElMessage.error('请输入用户名、密码并选择角色');
+    return;
+  }
 
-    // Redirect based on role
-    switch (loginForm.value.role) {
-      case 'admin':
-        router.push('/admin');
-        break;
-      case 'doctor':
-        router.push('/doctor');
-        break;
-      case 'patient':
-        router.push('/patient');
-        break;
-      default:
-        router.push('/'); // Fallback or error page
+  try {
+    const response = await fetch('http://loc/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(loginForm.value)
+    });
+
+    const res = await response.json();
+
+    if (res.success) {
+      // 保存 token 和用户信息
+      localStorage.setItem('token', res.data.token);
+      localStorage.setItem('userRole', res.data.user.role);
+      localStorage.setItem('userName', res.data.user.name);
+      ElMessage.success('登录成功');
+
+      // 跳转到不同角色页面
+      switch (res.data.user.role) {
+        case 'admin':
+          router.push('/admin');
+          break;
+        case 'doctor':
+          router.push('/doctor');
+          break;
+        case 'patient':
+          router.push('/patient');
+          break;
+        default:
+          router.push('/');
+      }
+    } else {
+      ElMessage.error(res.error?.message || '登录失败');
     }
-  } else {
-    ElMessage.error('请输入用户名、密码和选择角色。');
+  } catch (err) {
+    console.error(err);
+    ElMessage.error('无法连接服务器，请稍后重试');
   }
 };
 </script>
 
+
 <style scoped>
 .login-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
-  /* background-color: #f8f8f823; */
+  width: 100vw;
+  position: relative;
 }
 
 .login-card {
   width: 400px;
-}
-
-.card-header {
-  text-align: center;
-  font-size: 20px;
+  padding: 20px;
+  position: absolute;
+  top: 50%;
+  left: 200px;
+  transform: translateY(-50%);
+  background-color: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
 }
 </style>

@@ -48,42 +48,52 @@ router.beforeEach((to, from, next) => {
   const userRole = localStorage.getItem('userRole');
 
   if (to.meta.requiresAuth) {
-    // This is a protected route
-    // TODO: Replace with actual authentication check
     if (!isAuthenticated) {
-      // User is not authenticated, redirect to login
+      // 未登录将跳转到登录页
       next({ name: 'Login' });
-    } else {
-      // User is authenticated, check role if specified
-      if (to.meta.role && to.meta.role !== userRole) {
-        // User does not have the required role, redirect to an appropriate page or show an error
-        // For now, let's redirect to login, but a dedicated 'Unauthorized' page would be better.
-        alert('Access Denied!'); // Simple alert for now
-        next({ name: 'Login' }); // Or redirect to a relevant dashboard if already logged in with a different role
-      } else {
-        next(); // Proceed to route
+    } else if (to.meta.role && to.meta.role !== userRole) {
+      // 登录了但角色不匹配
+      alert('无权限访问该页面');
+      // 跳转到当前用户的角色首页，避免无限跳转
+      switch (userRole) {
+        case 'admin':
+          next({ name: 'Admin' });
+          break;
+        case 'doctor':
+          next({ name: 'Doctor' });
+          break;
+        case 'patient':
+          next({ name: 'Patient' });
+          break;
+        default:
+          next({ name: 'Login' });
       }
+    } else {
+      // 登录且角色匹配
+      next();
     }
   } else {
-    // Route does not require auth
     if (to.name === 'Login' && isAuthenticated) {
-      // If user is authenticated and tries to go to Login page,
-      // redirect them to their dashboard if their role is known.
-      if (userRole === 'admin') {
-        next({ path: '/admin' });
-      } else if (userRole === 'doctor') {
-        next({ path: '/doctor' });
-      } else if (userRole === 'patient') {
-        next({ path: '/patient' });
-      } else {
-        // Authenticated, but role is unknown or not set.
-        // Allow proceeding to the login page (or current non-auth page).
-        next();
+      // 已登录用户访问登录页，重定向到角色首页
+      switch (userRole) {
+        case 'admin':
+          next({ name: 'Admin' });
+          break;
+        case 'doctor':
+          next({ name: 'Doctor' });
+          break;
+        case 'patient':
+          next({ name: 'Patient' });
+          break;
+        default:
+          next(); // 角色未知，允许访问登录页
       }
     } else {
-      next(); // Proceed for other non-auth routes, or if not (on Login and authenticated)
+      // 其他无需验证的页面，直接放行
+      next();
     }
   }
 });
+
 
 export default router;
