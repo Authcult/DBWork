@@ -1,0 +1,143 @@
+package org.example.databasework.service.impl;
+
+import org.example.databasework.mapper.DoctorMapper;
+import org.example.databasework.mapper.ScheduleMapper;
+import org.example.databasework.model.Doctor;
+import org.example.databasework.model.Schedule;
+import org.example.databasework.service.DoctorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+public class DoctorServiceImpl implements DoctorService {
+
+    private final DoctorMapper doctorMapper;
+    private final ScheduleMapper scheduleMapper;
+
+    @Autowired
+    public DoctorServiceImpl(DoctorMapper doctorMapper, ScheduleMapper scheduleMapper) {
+        this.doctorMapper = doctorMapper;
+        this.scheduleMapper = scheduleMapper;
+    }
+
+    @Override
+    @Transactional
+    public Doctor addDoctor(Doctor doctor) {
+        doctorMapper.createDoctor(doctor);
+        return doctor;
+    }
+
+    @Override
+    public List<Doctor> getAllDoctors() {
+        return doctorMapper.findAllDoctors();
+    }
+
+    @Override
+    public Page<Doctor> getDoctorsByPage(int page, int pageSize) {
+        int total = doctorMapper.countDoctors();
+        List<Doctor> doctors = doctorMapper.findDoctorsByPage(page * pageSize, pageSize);
+        return new PageImpl<>(doctors, PageRequest.of(page, pageSize), total);
+    }
+
+    @Override
+    public Doctor getDoctorById(Integer doctorId) {
+        Doctor doctor = doctorMapper.findDoctorById(doctorId);
+        if (doctor == null) {
+            throw new RuntimeException("医生不存在，ID: " + doctorId);
+        }
+        return doctor;
+    }
+
+    @Override
+    @Transactional
+    public Doctor updateDoctor(Integer doctorId, Doctor doctorDetails) {
+        Doctor doctor = getDoctorById(doctorId);
+        
+        // 更新医生信息
+        doctor.setName(doctorDetails.getName());
+        doctor.setGender(doctorDetails.getGender());
+        doctor.setTitle(doctorDetails.getTitle());
+        doctor.setPhone(doctorDetails.getPhone());
+        doctor.setDepartment(doctorDetails.getDepartment());
+        
+        doctorMapper.updateDoctor(doctor);
+        return doctor;
+    }
+
+    @Override
+    @Transactional
+    public Doctor updateDoctorPassword(Integer doctorId, String password) {
+        Doctor doctor = getDoctorById(doctorId);
+        doctor.setPassword(password);
+        doctorMapper.updateDoctorPassword(doctor);
+        return doctor;
+    }
+
+    @Override
+    @Transactional
+    public void deleteDoctor(Integer doctorId) {
+        // 先删除医生关联的排班记录
+        scheduleMapper.deleteSchedulesByDoctorId(doctorId);
+        // 再删除医生记录
+        int result = doctorMapper.deleteDoctor(doctorId);
+        if (result == 0) {
+            throw new RuntimeException("医生不存在，ID: " + doctorId);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Schedule addSchedule(Integer doctorId, Schedule schedule) {
+        Doctor doctor = getDoctorById(doctorId);
+        schedule.setDoctor(doctor);
+        scheduleMapper.createSchedule(schedule);
+        return schedule;
+    }
+
+    @Override
+    public List<Schedule> getDoctorSchedules(Integer doctorId) {
+        // 验证医生是否存在
+        getDoctorById(doctorId);
+        return scheduleMapper.findSchedulesByDoctorId(doctorId);
+    }
+    
+    @Override
+    public Schedule getScheduleById(Integer scheduleId) {
+        return scheduleMapper.findScheduleById(scheduleId);
+    }
+    
+    @Override
+    public Schedule updateSchedule(Integer scheduleId, Schedule schedule) {
+        // 验证排班是否存在
+        Schedule existingSchedule = getScheduleById(scheduleId);
+        if (existingSchedule == null) {
+            throw new RuntimeException("排班信息不存在");
+        }
+        
+        // 保留医生信息
+        schedule.setScheduleID(scheduleId);
+        schedule.setDoctor(existingSchedule.getDoctor());
+        
+        // 更新排班信息
+        scheduleMapper.updateSchedule(schedule);
+        
+        return getScheduleById(scheduleId);
+    }
+    
+    @Override
+    public void deleteSchedule(Integer scheduleId) {
+        // 验证排班是否存在
+        Schedule existingSchedule = getScheduleById(scheduleId);
+        if (existingSchedule == null) {
+            throw new RuntimeException("排班信息不存在");
+        }
+        
+        scheduleMapper.deleteSchedule(scheduleId);
+    }
+}
