@@ -31,6 +31,9 @@
           <el-form-item>
             <el-button type="primary" native-type="submit" style="width: 100%;">注册</el-button>
           </el-form-item>
+          <el-form-item>
+            <el-button type="info" style="width: 100%;" @click="goBackToLogin" >返回登录界面</el-button>
+          </el-form-item>
         </el-form>
       </el-card>
     </div>
@@ -42,6 +45,10 @@
   import { ElMessage } from 'element-plus';
   
   const router = useRouter();
+
+  const goBackToLogin = () => {
+  router.push('/login');
+  };
   
   const registerForm = ref({
     name: '',

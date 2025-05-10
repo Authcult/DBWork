@@ -2,9 +2,9 @@
   <div id="app">
     <div class="app-header">
       <span class="title">医院管理系统</span>
-      <el-button v-if="isAuthenticated" type="danger" size="small" @click="handleLogout">
+      <!-- <el-button v-if="isAuthenticated" type="danger" size="small" @click="handleLogout">
         退出登录
-      </el-button>
+      </el-button> -->
     </div>
     <router-view></router-view>
   </div>
