@@ -53,40 +53,51 @@
   });
   
   const handleRegister = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(registerForm.value)
-      });
-  
-      const res = await response.json();
-  
-      if (res.success) {
-        ElMessage.success('注册成功，请前往登录');
-        router.push('/login');
+  try {
+    const response = await fetch('http://localhost:8080/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(registerForm.value)
+    });
+
+    const res = await response.json();
+
+    if (res.success) {
+      ElMessage.success('注册成功，请前往登录');
+      router.push('/login');
+    } else {
+      // 根据后端返回的错误信息进行精确提示
+      if (res.error?.message?.includes('手机号已注册') || res.error?.message?.includes('已存在')) {
+        ElMessage.error('注册失败，该手机号已经注册！');
       } else {
         ElMessage.error(res.error?.message || '注册失败');
       }
-    } catch (err) {
-      console.error(err);
-      ElMessage.error('注册请求失败，请稍后重试');
     }
-  };
+  } catch (err) {
+    console.error(err);
+    ElMessage.error('注册请求失败，请稍后重试');
+  }
+};
   </script>
   
   <style scoped>
   .register-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
+    width: 100vw;
+    position: relative;
   }
   
   .register-card {
     width: 500px;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 200px;
+    transform: translateY(-50%);
+    background-color: white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   }
   
   .card-header {

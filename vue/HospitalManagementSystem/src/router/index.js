@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue';
 import AdminView from '../views/AdminView.vue';
 import DoctorView from '../views/DoctorView.vue';
 import PatientView from '../views/PatientView.vue';
+import RegisterView from '@/views/RegisterView.vue';
 
 const routes = [
   {
@@ -34,6 +35,11 @@ const routes = [
     component: PatientView,
     // TODO: Add route guard for patient role
     meta: { requiresAuth: true, role: 'patient' }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: RegisterView
   }
 ];
 

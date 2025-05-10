@@ -23,6 +23,9 @@
         <el-form-item>
           <el-button type="primary" native-type="submit" style="width: 100%;">登录</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="goToRegister" style="width: 100%;">还没有账号？去注册</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
   </div>
@@ -34,6 +37,10 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 
 const router = useRouter();
+
+const goToRegister = () => {
+  router.push('/register'); 
+}
 
 const loginForm = ref({
   username: '',
@@ -48,7 +55,7 @@ const handleLogin = async () => {
   }
 
   try {
-    const response = await fetch('http://loc/auth/login', {
+    const response = await fetch('http://localhost:8080/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -59,13 +66,15 @@ const handleLogin = async () => {
     const res = await response.json();
 
     if (res.success) {
-      // 保存 token 和用户信息
+      // 登录成功
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('userRole', res.data.user.role);
       localStorage.setItem('userName', res.data.user.name);
+      localStorage.setItem('isAuthenticated', 'true');
+
       ElMessage.success('登录成功');
 
-      // 跳转到不同角色页面
+      // 跳转到对应角色页面
       switch (res.data.user.role) {
         case 'admin':
           router.push('/admin');
@@ -79,14 +88,16 @@ const handleLogin = async () => {
         default:
           router.push('/');
       }
-    } else {
-      ElMessage.error(res.error?.message || '登录失败');
+    } else{ 
+      // 登录失败
+      ElMessage.error(res.error?.message || '登录失败，请检查用户名、密码和角色是否正确！或者是否已经注册！'); 
     }
   } catch (err) {
     console.error(err);
     ElMessage.error('无法连接服务器，请稍后重试');
   }
 };
+
 </script>
 
 
