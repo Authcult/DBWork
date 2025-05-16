@@ -8,6 +8,8 @@ import org.example.databasework.model.Patient;
 public interface UserService {
     Patient findByUsername(String username);
     
+    Patient findByPhone(String phone);
+    
     Doctor findDoctorById(String doctorId);
     
     Admin findAdminByUsername(String username);

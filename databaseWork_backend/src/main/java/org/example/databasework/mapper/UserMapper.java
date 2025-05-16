@@ -1,18 +1,20 @@
 package org.example.databasework.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.example.databasework.model.Admin;
 import org.example.databasework.model.Doctor;
 import org.example.databasework.model.Patient;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
 
     @Select("select * from Patient where username = #{username}")
     Patient findByUsername(String username);
+    
+    @Select("select * from Patient where phone = #{phone}")
+    Patient findByPhone(String phone);
     
     @Select("select * from Doctor where doctorID = #{doctorId}")
     Doctor findDoctorById(String doctorId);
@@ -32,4 +34,30 @@ public interface UserMapper {
     @Insert("insert into Patient (name, gender, address, phone, username, password) values (#{name}, #{gender}, #{address}, #{phone}, #{username}, #{password})")
     @Options(useGeneratedKeys = true, keyProperty = "patientID", keyColumn = "patientID")
     int createUser(Patient patient);
+
+    @Insert("INSERT INTO Admin (username, password, fullName, phone, email) VALUES (#{username}, #{password}, #{fullName}, #{phone}, #{email})")
+    int createAdmin(Admin admin);
+
+    @Select("SELECT * FROM Admin")
+    List<Admin> getAllAdmins();
+
+    @Select("SELECT * FROM Admin WHERE adminID = #{adminId}")
+    Admin getAdminById(Integer adminId);
+
+    @Update({
+    "<script>",
+    "UPDATE Admin SET",
+    "fullName = #{fullName},",
+    "phone = #{phone},",
+    "email = #{email}",
+    "<if test='password != null and password != \"\"'>, password = #{password}</if>",
+    "WHERE adminID = #{adminID}",
+    "</script>"
+    })
+    int updateAdmin(Admin admin);
+
+    @Delete("DELETE FROM Admin WHERE adminID = #{adminId}")
+    int deleteAdmin(Integer adminId);
+
+
 }

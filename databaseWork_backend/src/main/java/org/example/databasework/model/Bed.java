@@ -1,10 +1,9 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Data;
 
+@Data
 @Entity
 @Table(name = "Bed")
 public class Bed {

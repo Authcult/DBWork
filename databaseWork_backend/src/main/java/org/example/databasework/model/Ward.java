@@ -1,10 +1,10 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "Ward")
 public class Ward {
@@ -14,7 +14,7 @@ public class Ward {
 
     private String location;
 
-    @Column(precision = 10, scale = 2)
+    @Column(name = "chargeStandard",precision = 10, scale = 2)
     private BigDecimal chargeStandard;
 
     @ManyToOne

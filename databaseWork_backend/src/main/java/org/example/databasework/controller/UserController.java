@@ -33,26 +33,34 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Hashtable<String, Object>>> register(@RequestBody Map<String, Object> params) {
-        // 查询用户是否已存在
+        // 查询用户名是否已存在
         Patient u = userService.findByUsername(params.get("username").toString());
         if (u != null) {
             return ResponseEntity.status(400).body(ApiResponse.error("USER_EXISTS", "用户已存在"));
-        } else {
-            // 创建新用户
-            Patient n=userService.createUser(
-                params.get("name").toString(),
-                params.get("gender").toString(),
-                params.get("address").toString(),
-                params.get("phone").toString(),
-                params.get("username").toString(),
-                params.get("password").toString()
-            );
-            Hashtable<String,Object> data= new Hashtable<>();
-            data.put("patientID",n.getPatientID());
-            data.put("username",n.getUsername());
-            return ResponseEntity.status(201).body(ApiResponse.success(data,"注册成功"));
         }
+        
+        // 查询手机号是否已存在
+        String phone = params.get("phone").toString();
+        Patient phoneUser = userService.findByPhone(phone);
+        if (phoneUser != null) {
+            return ResponseEntity.status(400).body(ApiResponse.error("PHONE_EXISTS", "手机号已被注册"));
+        }
+        
+        // 创建新用户
+        Patient n=userService.createUser(
+            params.get("name").toString(),
+            params.get("gender").toString(),
+            params.get("address").toString(),
+            phone,
+            params.get("username").toString(),
+            params.get("password").toString()
+        );
+        Hashtable<String,Object> data= new Hashtable<>();
+        data.put("patientID",n.getPatientID());
+        data.put("username",n.getUsername());
+        return ResponseEntity.status(201).body(ApiResponse.success(data,"注册成功"));
     }
+    
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<Hashtable<String, Object>>> login(@RequestBody Map<String, Object> params) {

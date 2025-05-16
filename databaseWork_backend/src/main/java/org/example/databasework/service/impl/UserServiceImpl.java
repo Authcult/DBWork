@@ -16,6 +16,11 @@ public class UserServiceImpl implements UserService {
     public Patient findByUsername(String username) {
         return userMapper.findByUsername(username);
     }
+    
+    @Override
+    public Patient findByPhone(String phone) {
+        return userMapper.findByPhone(phone);
+    }
 
     @Override
     public Doctor findDoctorById(String doctorId) {
