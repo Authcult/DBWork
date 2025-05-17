@@ -2,7 +2,7 @@ import axios from "axios";
 
 // 创建axios实例
 const request = axios.create({
-    baseURL:'localhost:8080',
+    baseURL:'http://localhost:8080',
     headers:{
         'Content-Type':'application/json',
     }

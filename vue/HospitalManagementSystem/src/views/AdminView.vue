@@ -7,6 +7,8 @@
       <el-main>
         <p>欢迎, 管理员! 这里是管理员专属内容区域。</p>
         <!-- TODO: Add admin specific components and features here -->
+        <el-button @click="$router.push('/admin/departments')">科室管理</el-button>
+        <el-button @click="$router.push('/admin/doctors')">医生管理</el-button>
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>

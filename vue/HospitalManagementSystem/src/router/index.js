@@ -40,7 +40,19 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: RegisterView
-  }
+  },
+  {
+    path: '/admin/departments',
+    name: 'DepartmentManagement',
+    component: () => import('@/views/admin/DepartmentManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/doctors',
+    name: 'DoctorManagement',
+    component: () => import('@/views/admin/DoctorManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  }  
 ];
 
 const router = createRouter({
