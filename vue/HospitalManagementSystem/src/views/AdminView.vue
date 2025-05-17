@@ -9,6 +9,7 @@
         <!-- TODO: Add admin specific components and features here -->
         <el-button @click="$router.push('/admin/departments')">科室管理</el-button>
         <el-button @click="$router.push('/admin/doctors')">医生管理</el-button>
+        <el-button @click="$router.push('/admin/schedules')">医生排班管理</el-button>
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>

@@ -12,4 +12,4 @@ jakarta.persistence:
     driver: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://localhost:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
-    password: 123
+    password: 123456

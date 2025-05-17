@@ -52,6 +52,12 @@ const routes = [
     name: 'DoctorManagement',
     component: () => import('@/views/admin/DoctorManagement.vue'),
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/schedules',
+    name: 'ScheduleManagement',
+    component: () => import('@/views/admin/ScheduleManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
   }  
 ];
 
