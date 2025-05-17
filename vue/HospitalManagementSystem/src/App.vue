@@ -27,7 +27,7 @@ const handleLogout = async () => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    await fetch('http://your-api-domain.com/auth/logout', {
+    await fetch('http://localhost:8080/auth/logout', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
