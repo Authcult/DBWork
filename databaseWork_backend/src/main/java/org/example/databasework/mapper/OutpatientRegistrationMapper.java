@@ -48,13 +48,14 @@ public interface OutpatientRegistrationMapper {
     /**
      *根据患者ID查询挂号记录
      */
-    @Select("SELECT registrationID, Patient.name, status " +
-            "FROM OutpatientRegistration,Patient WHERE OutpatientRegistration.patientID = #{patientId} AND Patient.patientID=OutpatientRegistration.patientID")
+    @Select("SELECT registrationID,patientID,doctorID ,status " +
+            "FROM OutpatientRegistration WHERE OutpatientRegistration.patientID = #{patientId} ")
     @Results({
         @Result(property = "registrationID", column = "registrationID"),
         @Result(property = "patient", column = "patientID", javaType = org.example.databasework.model.Patient.class,
             one = @One(select = "org.example.databasework.mapper.PatientMapper.findById")),
-        @Result(property = "patientName",column = "Name"),
+        @Result(property = "doctor", column = "doctorID", javaType = org.example.databasework.model.Doctor.class,
+            one = @One(select = "org.example.databasework.mapper.DoctorMapper.findDoctorById")),
         @Result(property = "status", column = "status"
         )
     })

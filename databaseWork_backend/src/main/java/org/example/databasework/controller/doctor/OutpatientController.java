@@ -1,14 +1,15 @@
 package org.example.databasework.controller.doctor;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.databasework.model.ApiResponse;
-import org.example.databasework.model.Doctor;
-import org.example.databasework.model.OutpatientRegistration;
-import org.example.databasework.model.Prescription;
+import org.example.databasework.model.*;
 import org.example.databasework.service.DoctorService;
+import org.example.databasework.service.DrugService;
 import org.example.databasework.service.OutpatientService;
+import org.example.databasework.service.PrescriptionService;
 import org.example.databasework.util.JwtUtil;
+import org.example.databasework.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,12 +31,16 @@ public class OutpatientController {
     private final DoctorService doctorService;
     private final JwtUtil jwtUtil;
     private final OutpatientService outpatientService;
-    
+    private final DrugService drugService;
+    private final PrescriptionService prescriptionService;
+
     @Autowired
-    public OutpatientController(DoctorService doctorService, JwtUtil jwtUtil, OutpatientService outpatientService) {
+    public OutpatientController(DoctorService doctorService, JwtUtil jwtUtil, OutpatientService outpatientService, DrugService drugService, PrescriptionService prescriptionService) {
         this.doctorService = doctorService;
         this.jwtUtil = jwtUtil;
         this.outpatientService = outpatientService;
+        this.drugService = drugService;
+        this.prescriptionService = prescriptionService;
     }
     
     /**
@@ -53,6 +58,30 @@ public class OutpatientController {
         } else {
             throw new RuntimeException("未提供有效的认证信息");
         }
+    }
+    /**
+     * 获取药品列表
+     */
+    @GetMapping("/drugs")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllDrugs(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            HttpServletRequest request) {
+        Integer doctorId = validateDoctorRole(request);
+
+        Page<Drug> drugPage = drugService.getDrugsByPage(page - 1, pageSize);
+
+        Map<String, Object> data = PageUtils.getPageData(drugPage, page, pageSize, drug -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("drugId", drug.getDrugID());
+            item.put("name", drug.getName());
+            item.put("price", drug.getPrice());
+            item.put("stock", drug.getStock());
+            return item;
+        });
+
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "获取药品列表成功");
+        return ResponseEntity.ok(response);
     }
     
     /**
@@ -177,6 +206,39 @@ public class OutpatientController {
         return outpatientService.getRegistrationsByPatientId(patientId);
     }
 
+    /**
+     * 开处方
+     * POST /doctor/patients/{registrationId}/prescription
+     */
+    @PostMapping("/patients/{registrationId}/prescription")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> createPrescription(
+            @PathVariable Integer registrationId,
+            @RequestBody Map<String, Object> prescriptionRequest,
+            HttpServletRequest request) {
+        Integer doctorId = validateDoctorRole(request);
+
+        // 从请求体中获取处方信息
+        String symptomDescription = (String) prescriptionRequest.get("symptomDescription");
+        Double diagnosisFee = (Double) prescriptionRequest.get("diagnosisFee");
+        List<Map<String, Object>> items = (List<Map<String, Object>>) prescriptionRequest.get("items");
+
+        // 创建处方
+        Prescription prescription = createPrescription(registrationId, symptomDescription, diagnosisFee, items, doctorId);
+
+        // 构建响应数据
+        Map<String, Object> data = new HashMap<>();
+        data.put("prescriptionId", prescription.getPrescriptionID());
+        data.put("registrationId", prescription.getRegistration().getRegistrationID());
+        data.put("symptomDescription", prescription.getSymptomDescription());
+        data.put("diagnosisFee", prescription.getDiagnosisFee());
+        data.put("totalDrugFee",  prescription.getTotalDrugFee());
+        data.put("totalAmount", prescription.getTotalAmount());
+        data.put("items", items);
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "处方创建成功");
+        return ResponseEntity.ok(response);
+    }
+
+
 
     // 以下是需要实现的辅助方法
     
@@ -198,6 +260,6 @@ public class OutpatientController {
      * 创建处方
      */
     private Prescription createPrescription(Integer registrationId, String symptomDescription, Double diagnosisFee, List<Map<String, Object>> items, Integer doctorId) {
-        return doctorService.createPrescription(registrationId, symptomDescription, diagnosisFee, items, doctorId);
+        return prescriptionService.createPrescription(registrationId, symptomDescription, diagnosisFee, items, doctorId);
     }
 }

@@ -43,11 +43,12 @@ public interface PrescriptionMapper {
     
     /**
      * 创建处方项
+     * return 创建的处方项的ID
      */
     @Insert("INSERT INTO PrescriptionItem (prescriptionID, drugID, quantity, usageInstruction) " +
            "VALUES (#{prescription.prescriptionID}, #{drug.drugID}, #{quantity}, #{usageInstruction})")
     @Options(useGeneratedKeys = true, keyProperty = "itemID", keyColumn = "itemID")
-    int createItem(PrescriptionItem item);
+    int createItem(PrescriptionItem prescriptionItem);
     
     /**
      * 根据处方ID查询处方项列表

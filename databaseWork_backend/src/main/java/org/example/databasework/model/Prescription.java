@@ -21,4 +21,10 @@ public class Prescription {
 
     @Column(precision = 10, scale = 2)
     private BigDecimal diagnosisFee;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal totalDrugFee;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal totalAmount;
 }

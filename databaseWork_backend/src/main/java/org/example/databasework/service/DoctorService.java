@@ -170,17 +170,6 @@ public interface DoctorService {
      * @return 更新后的挂号信息
      */
     OutpatientRegistration updateRegistrationStatus(Integer registrationId, String status, Integer doctorId);
-    
-    /**
-     * 完成接诊并创建处方
-     * @param registrationId 挂号ID
-     * @param symptomDescription 症状描述
-     * @param diagnosisFee 诊疗费
-     * @param items 处方项列表
-     * @param doctorId 医生ID
-     * @return 创建的处方
-     */
-    Prescription createPrescription(Integer registrationId, String symptomDescription, Double diagnosisFee, List<Map<String, Object>> items, Integer doctorId);
 
     /**
      * 获取全体排班信息

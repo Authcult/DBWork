@@ -13,7 +13,7 @@ public interface HospitalizationRecordMapper {
     /**
      * 根据医生ID查询住院记录列表
      */
-    @Select("SELECT * FROM HospitalizationRecord WHERE doctorID = #{doctorId} AND (dischargeDate IS NULL OR dischargeDate >= CURRENT_DATE())")
+    @Select("SELECT * FROM HospitalizationRecord WHERE doctorID = #{doctorId}")
     @Results({
         @Result(property = "recordID", column = "recordID"),
         @Result(property = "patient", column = "patientID", javaType = org.example.databasework.model.Patient.class,

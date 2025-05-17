@@ -204,10 +204,7 @@ public class DoctorServiceImpl implements DoctorService {
         }
     }
     
-    @Override
-    public Prescription createPrescription(Integer registrationId, String symptomDescription, Double diagnosisFee, List<Map<String, Object>> items, Integer doctorId) {
-        return null;
-    }
+
 
     @Override
     public List<Schedule> getAllSchedules() {
