@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/DBWork.iml" filepath="$PROJECT_DIR$/.idea/DBWork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/databaseWork_backend/databaseWork.iml" filepath="$PROJECT_DIR$/databaseWork_backend/databaseWork.iml" />
     </modules>
   </component>
 </project>

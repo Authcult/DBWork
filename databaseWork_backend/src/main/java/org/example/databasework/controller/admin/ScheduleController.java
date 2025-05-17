@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,6 +40,19 @@ public class ScheduleController {
         } else {
             throw new RuntimeException("未提供有效的认证信息");
         }
+    }
+    /**
+     * 获取所有排班信息
+     * GET /admin/schedules
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllSchedules(HttpServletRequest request) {
+        validateAdminRole(request);
+        List<Schedule> schedules = doctorService.getAllSchedules();
+        Map<String, Object> data = new HashMap<>();
+        data.put("schedules", schedules);
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "获取所有排班信息成功");
+        return ResponseEntity.ok(response);
     }
 
     /**

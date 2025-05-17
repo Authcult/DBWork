@@ -1,12 +1,13 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
+import lombok.Data;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "HospitalizationRecord")
+@Data
 public class HospitalizationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

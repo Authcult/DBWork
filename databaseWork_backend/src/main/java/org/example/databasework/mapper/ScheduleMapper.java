@@ -1,6 +1,7 @@
 package org.example.databasework.mapper;
 
 import org.apache.ibatis.annotations.*;
+import org.example.databasework.model.Department;
 import org.example.databasework.model.Schedule;
 
 import java.util.List;
@@ -42,4 +43,14 @@ public interface ScheduleMapper {
     
     @Delete("DELETE FROM Schedule WHERE doctorID = #{doctorId}")
     int deleteSchedulesByDoctorId(Integer doctorId);
+
+    @Select("SELECT * FROM Schedule")
+    @Results({
+            @Result(property = "doctor", column = "doctorID", javaType = org.example.databasework.model.Doctor.class,
+                    one = @One(select = "org.example.databasework.mapper.DoctorMapper.findDoctorById")),
+            @Result(property = "workType", column = "workType"),
+            @Result(property = "startTime", column = "startTime"),
+            @Result(property = "endTime", column = "endTime")
+    })
+    List<Schedule> findAllSchedules();
 }

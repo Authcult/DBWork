@@ -1,12 +1,11 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Data;
 
 @Entity
 @Table(name = "PrescriptionItem")
+@Data
 public class PrescriptionItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

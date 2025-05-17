@@ -14,6 +14,9 @@ public class Bed {
     @Column(nullable = false)
     private String bedNumber;
 
+    @Column(nullable = true)
+    private String status;
+
     @ManyToOne
     @JoinColumn(name = "wardID", nullable = false)
     private Ward ward;

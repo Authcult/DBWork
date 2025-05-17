@@ -1,12 +1,13 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import lombok.Data;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "OutpatientRegistration")
+@Data
 public class OutpatientRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,9 @@ public class OutpatientRegistration {
     @ManyToOne
     @JoinColumn(name = "doctorID", nullable = false)
     private Doctor doctor;
+
+    @Column(name="status",nullable = true)
+    private String status;
 
     private LocalDateTime registrationTime = LocalDateTime.now();
 }

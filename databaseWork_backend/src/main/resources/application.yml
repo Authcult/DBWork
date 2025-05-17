@@ -1,7 +1,4 @@
 spring:
-  sql:
-    show: true
-    format: true
   application:
     name: databaseWork
   datasource:

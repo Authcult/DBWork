@@ -3,8 +3,14 @@ package org.example.databasework.service.impl;
 import org.example.databasework.mapper.DoctorMapper;
 import org.example.databasework.mapper.ScheduleMapper;
 import org.example.databasework.model.Doctor;
+import org.example.databasework.model.HospitalizationDailyRecord;
+import org.example.databasework.model.HospitalizationRecord;
+import org.example.databasework.model.OutpatientRegistration;
+import org.example.databasework.model.Prescription;
 import org.example.databasework.model.Schedule;
 import org.example.databasework.service.DoctorService;
+import org.example.databasework.service.HospitalizationService;
+import org.example.databasework.service.OutpatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,18 +18,26 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorMapper doctorMapper;
     private final ScheduleMapper scheduleMapper;
+    private final HospitalizationService hospitalizationService;
+    private final OutpatientService outpatientService;
 
     @Autowired
-    public DoctorServiceImpl(DoctorMapper doctorMapper, ScheduleMapper scheduleMapper) {
+    public DoctorServiceImpl(DoctorMapper doctorMapper, ScheduleMapper scheduleMapper,
+                            HospitalizationService hospitalizationService,
+                            OutpatientService outpatientService) {
         this.doctorMapper = doctorMapper;
         this.scheduleMapper = scheduleMapper;
+        this.hospitalizationService = hospitalizationService;
+        this.outpatientService = outpatientService;
     }
 
     @Override
@@ -139,5 +153,64 @@ public class DoctorServiceImpl implements DoctorService {
         }
         
         scheduleMapper.deleteSchedule(scheduleId);
+    }
+    
+    // 住院相关方法实现
+    
+    @Override
+    public List<HospitalizationRecord> getHospitalizationRecordsByDoctor(Integer doctorId) {
+        return hospitalizationService.getHospitalizationRecordsByDoctor(doctorId);
+    }
+    
+    @Override
+    public HospitalizationRecord getHospitalizationRecordById(Integer recordId, Integer doctorId) {
+        return hospitalizationService.getHospitalizationRecordById(recordId, doctorId);
+    }
+    
+    @Override
+    public HospitalizationRecord createHospitalizationRecord(Integer patientId, Integer attendingDoctorId, Integer wardId, Integer bedId, LocalDate admissionDate) {
+        return hospitalizationService.createHospitalizationRecord(patientId, attendingDoctorId, wardId, bedId, admissionDate);
+    }
+    
+    @Override
+    public List<HospitalizationDailyRecord> getDailyRecordsByHospitalizationRecord(Integer recordId) {
+        return hospitalizationService.getDailyRecordsByHospitalizationRecord(recordId);
+    }
+    
+    @Override
+    public HospitalizationDailyRecord createDailyRecord(Integer recordId, String treatmentPlan, Integer doctorId) {
+        return hospitalizationService.createDailyRecord(recordId, treatmentPlan, doctorId);
+    }
+    
+    @Override
+    public HospitalizationRecord dischargePatient(Integer recordId, LocalDate dischargeDate, Integer doctorId) {
+        return hospitalizationService.dischargePatient(recordId, dischargeDate, doctorId);
+    }
+    
+    // 门诊相关方法实现
+    
+    @Override
+    public List<OutpatientRegistration> getRegistrationsByDoctorAndDate(Integer doctorId, LocalDate date) {
+        return outpatientService.getRegistrationsByDoctorAndDate(doctorId, date);
+    }
+    
+    @Override
+    public OutpatientRegistration updateRegistrationStatus(Integer registrationId, String status, Integer doctorId) {
+        if ("consulting".equals(status)) {
+            return outpatientService.startConsultation(registrationId, doctorId);
+        } else {
+
+            return outpatientService.completeConsultation(registrationId, status, doctorId);
+        }
+    }
+    
+    @Override
+    public Prescription createPrescription(Integer registrationId, String symptomDescription, Double diagnosisFee, List<Map<String, Object>> items, Integer doctorId) {
+        return null;
+    }
+
+    @Override
+    public List<Schedule> getAllSchedules() {
+        return scheduleMapper.findAllSchedules();
     }
 }
