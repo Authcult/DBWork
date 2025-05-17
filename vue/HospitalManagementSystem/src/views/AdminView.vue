@@ -10,6 +10,9 @@
         <el-button @click="$router.push('/admin/departments')">科室管理</el-button>
         <el-button @click="$router.push('/admin/doctors')">医生管理</el-button>
         <el-button @click="$router.push('/admin/schedules')">医生排班管理</el-button>
+        <el-button @click="$router.push('/admin/drugs')">药品管理</el-button>
+        <el-button @click="$router.push('/admin/beds')">病房与病床管理</el-button>
+
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>

@@ -58,7 +58,19 @@ const routes = [
     name: 'ScheduleManagement',
     component: () => import('@/views/admin/ScheduleManagement.vue'),
     meta: { requiresAuth: true, role: 'admin' }
-  }  
+  },
+  {
+    path: '/admin/drugs',
+    name: 'DrugManagement',
+    component: () => import('@/views/admin/DrugManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/beds',
+    name: 'BedManagement',
+    component: () => import('@/views/admin/BedManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  } 
 ];
 
 const router = createRouter({
