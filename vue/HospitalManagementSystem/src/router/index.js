@@ -66,9 +66,9 @@ const routes = [
     meta: { requiresAuth: true, role: 'admin' }
   },
   {
-    path: '/admin/beds',
-    name: 'BedManagement',
-    component: () => import('@/views/admin/BedManagement.vue'),
+    path:'/admin/wards',
+    name:'WardsManagement',
+    component:()=>import('@/views/admin/WardsManagement.vue'),
     meta: { requiresAuth: true, role: 'admin' }
   } 
 ];
