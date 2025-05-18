@@ -70,6 +70,9 @@ const routes = [
     name:'WardsManagement',
     component:()=>import('@/views/admin/WardsManagement.vue'),
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    
   } 
 ];
 
