@@ -23,6 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 // 排除不需要验证的路径
                 .excludePathPatterns(
+                        "/public/**",
                         "/auth/login",     // 登录接口
                         "/auth/register",  // 注册接口
                         "/error",          // 错误页面

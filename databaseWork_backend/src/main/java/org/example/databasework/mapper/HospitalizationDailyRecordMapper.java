@@ -3,7 +3,6 @@ package org.example.databasework.mapper;
 import org.apache.ibatis.annotations.*;
 import org.example.databasework.model.HospitalizationDailyRecord;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Mapper
@@ -12,11 +11,9 @@ public interface HospitalizationDailyRecordMapper {
     /**
      * 根据住院记录ID查询每日诊疗记录列表
      */
-    @Select("SELECT * FROM HospitalizationDailyRecord WHERE recordID = #{recordId} ORDER BY date DESC")
+    @Select("SELECT DailyRecordID,Date,TreatmentPlan FROM HospitalizationDailyRecord WHERE recordID = #{recordId} ORDER BY date DESC")
     @Results({
-        @Result(property = "dailyRecordID", column = "dailyRecordID"),
-        @Result(property = "record", column = "recordID", javaType = org.example.databasework.model.HospitalizationRecord.class,
-            one = @One(select = "org.example.databasework.mapper.HospitalizationRecordMapper.findById"))
+        @Result(property = "dailyRecordID", column = "dailyRecordID")
     })
     List<HospitalizationDailyRecord> findByRecordId(Integer recordId);
     

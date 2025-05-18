@@ -2,10 +2,7 @@ package org.example.databasework.controller.doctor;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.databasework.model.*;
-import org.example.databasework.service.DoctorService;
-import org.example.databasework.service.DrugService;
-import org.example.databasework.service.OutpatientService;
-import org.example.databasework.service.PrescriptionService;
+import org.example.databasework.service.*;
 import org.example.databasework.util.JwtUtil;
 import org.example.databasework.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +30,16 @@ public class OutpatientController {
     private final OutpatientService outpatientService;
     private final DrugService drugService;
     private final PrescriptionService prescriptionService;
+    private final PaymentService paymentService;
 
     @Autowired
-    public OutpatientController(DoctorService doctorService, JwtUtil jwtUtil, OutpatientService outpatientService, DrugService drugService, PrescriptionService prescriptionService) {
+    public OutpatientController(DoctorService doctorService, JwtUtil jwtUtil, OutpatientService outpatientService, DrugService drugService, PrescriptionService prescriptionService,  PaymentService paymentService) {
         this.doctorService = doctorService;
         this.jwtUtil = jwtUtil;
         this.outpatientService = outpatientService;
         this.drugService = drugService;
         this.prescriptionService = prescriptionService;
+        this.paymentService = paymentService;
     }
     
     /**
@@ -224,7 +223,7 @@ public class OutpatientController {
 
         // 创建处方
         Prescription prescription = createPrescription(registrationId, symptomDescription, diagnosisFee, items, doctorId);
-
+        Payment payment = paymentService.createPayment(prescription.getRegistration().getPatient().getPatientID(), prescription.getTotalAmount(), "门诊");
         // 构建响应数据
         Map<String, Object> data = new HashMap<>();
         data.put("prescriptionId", prescription.getPrescriptionID());

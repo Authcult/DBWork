@@ -26,6 +26,11 @@ public class UserServiceImpl implements UserService {
     public Doctor findDoctorById(String doctorId) {
         return userMapper.findDoctorById(doctorId);
     }
+    
+    @Override
+    public Patient findPatientById(String patientId) {
+        return userMapper.findPatientById(patientId);
+    }
 
     @Override
     public Admin findAdminByUsername(String username) {
@@ -57,6 +62,9 @@ public class UserServiceImpl implements UserService {
        userMapper.createUser(patient); // 插入后主键会自动填充到 patient 对象中
        return patient;
     }
-
-
+    
+    @Override
+    public void updatePatient(Patient patient) {
+        userMapper.updatePatient(patient);
+    }
 }

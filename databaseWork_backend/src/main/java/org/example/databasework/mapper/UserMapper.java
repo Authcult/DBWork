@@ -19,6 +19,9 @@ public interface UserMapper {
     @Select("select * from Doctor where doctorID = #{doctorId}")
     Doctor findDoctorById(String doctorId);
     
+    @Select("select * from Patient where patientID = #{patientId}")
+    Patient findPatientById(String patientId);
+    
     @Select("select * from Admin where username = #{username}")
     Admin findAdminByUsername(String username);
     
@@ -34,6 +37,9 @@ public interface UserMapper {
     @Insert("insert into Patient (name, gender, address, phone, username, password) values (#{name}, #{gender}, #{address}, #{phone}, #{username}, #{password})")
     @Options(useGeneratedKeys = true, keyProperty = "patientID", keyColumn = "patientID")
     int createUser(Patient patient);
+    
+    @Update("update Patient set name = #{name}, gender = #{gender}, address = #{address}, phone = #{phone}, username = #{username}, password = #{password} where patientID = #{patientID}")
+    int updatePatient(Patient patient);
 
     @Insert("INSERT INTO Admin (username, password, fullName, phone, email) VALUES (#{username}, #{password}, #{fullName}, #{phone}, #{email})")
     int createAdmin(Admin admin);

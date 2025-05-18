@@ -60,4 +60,18 @@ public interface OutpatientRegistrationMapper {
         )
     })
     List<OutpatientRegistration> findByPatientId(Integer patientId);
+
+    /**
+     * 创建挂号记录
+     */
+    @Insert("INSERT INTO OutpatientRegistration (patientID, doctorID, registrationTime, status) " +
+            "VALUES (#{patient.patientID}, #{doctor.doctorID}, #{registrationTime}, 'wait')")
+    @Options(useGeneratedKeys = true, keyProperty = "registrationID")
+    int createRegistration(OutpatientRegistration registration);
+
+    /**
+     * 取消挂号
+     */
+    @Delete("DELETE FROM OutpatientRegistration WHERE registrationID = #{registrationId}")
+    int cancelRegistration(Integer registrationId);
 }

@@ -1,12 +1,15 @@
 package org.example.databasework.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
 @Entity
 @Table(name = "Payment")
+@Data
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,5 +24,7 @@ public class Payment {
 
     private String paymentType;
 
-    private LocalDateTime paymentDate = LocalDateTime.now();
+    private LocalDateTime createdDate;
+
+    private LocalDateTime paidDate;
 }

@@ -166,7 +166,7 @@ public class WardController {
         ApiResponse<Void> response = ApiResponse.success(null, "病房删除成功");
         return ResponseEntity.ok(response);
     }
-    
+
     /**
      * 获取指定病房中的病床列表
      */

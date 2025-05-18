@@ -1,19 +1,15 @@
 package org.example.databasework.service.impl;
 
-import org.example.databasework.mapper.DrugMapper;
-import org.example.databasework.mapper.OutpatientRegistrationMapper;
-import org.example.databasework.mapper.PrescriptionMapper;
-import org.example.databasework.model.Drug;
-import org.example.databasework.model.OutpatientRegistration;
-import org.example.databasework.model.Prescription;
-import org.example.databasework.model.PrescriptionItem;
+import org.example.databasework.mapper.*;
+import org.example.databasework.model.*;
 import org.example.databasework.service.OutpatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,14 +22,71 @@ public class OutpatientServiceImpl implements OutpatientService {
     private final OutpatientRegistrationMapper registrationMapper;
     private final PrescriptionMapper prescriptionMapper;
     private final DrugMapper drugMapper;
-    
+    private final ScheduleMapper scheduleMapper;
+    private final OutpatientRegistrationMapper outpatientRegistrationMapper;
+    private final PatientMapper patientMapper;
+    private final DoctorMapper doctorMapper;
+
     @Autowired
-    public OutpatientServiceImpl(OutpatientRegistrationMapper registrationMapper, 
-                                PrescriptionMapper prescriptionMapper,
-                                DrugMapper drugMapper) {
+    public OutpatientServiceImpl(OutpatientRegistrationMapper registrationMapper,
+                                 PrescriptionMapper prescriptionMapper,
+                                 DrugMapper drugMapper, ScheduleMapper scheduleMapper,
+                                 OutpatientRegistrationMapper outpatientRegistrationMapper,
+                                 PatientMapper patientMapper,
+                                 DoctorMapper doctorMapper) {
         this.registrationMapper = registrationMapper;
         this.prescriptionMapper = prescriptionMapper;
         this.drugMapper = drugMapper;
+        this.scheduleMapper = scheduleMapper;
+        this.outpatientRegistrationMapper = outpatientRegistrationMapper;
+        this.patientMapper = patientMapper;
+        this.doctorMapper = doctorMapper;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAvailableSlots() {
+        return scheduleMapper.findAvailableSchedules();
+    }
+
+    @Override
+    public OutpatientRegistration createRegistration(Integer patientId, Integer doctorId, String registrationTime) {
+        //查询改医生是否在该registrationTime有schedule
+        if (scheduleMapper.findSchedulesByDoctorId(doctorId) == null) {
+            throw new RuntimeException("该医生没有该时间段的排班");
+        }else{
+            List<Schedule> schedules = scheduleMapper.findSchedulesByDoctorId(doctorId);
+            for (Schedule schedule : schedules) {
+                ZonedDateTime zonedDateTime = ZonedDateTime.parse(registrationTime);
+                LocalDateTime localDateTime = zonedDateTime.toLocalDateTime();
+                if (schedule.getStartTime().isBefore(localDateTime) && schedule.getEndTime().isAfter(localDateTime)&&schedule.getWorkType().equals("门诊")) {
+                    // 创建挂号记录
+                    OutpatientRegistration registration = new OutpatientRegistration();
+                    registration.setPatient(patientMapper.findById(patientId));
+                    registration.setDoctor(doctorMapper.findDoctorById(doctorId));
+                    registration.setRegistrationTime(localDateTime);
+                    registration.setStatus("wait");
+                    outpatientRegistrationMapper.createRegistration(registration);
+                    return registration;
+                }
+            }
+            throw new RuntimeException("该医生没有该时间段的排班");
+        }
+    }
+
+    @Override
+    public List<OutpatientRegistration> getPatientRegistrations(Integer patientId) {
+        return outpatientRegistrationMapper.findByPatientId(patientId);
+    }
+
+    @Override
+    public boolean cancelRegistration(Integer registrationId, Integer patientId) {
+        if (registrationMapper.findById(registrationId) == null) {
+            return false;
+        }
+        if (!registrationMapper.findById(registrationId).getPatient().getPatientID().equals(patientId)) {
+            return false;
+        }
+        return registrationMapper.cancelRegistration(registrationId) > 0;
     }
 
     @Override

@@ -47,6 +47,24 @@ public class BedController {
     }
 
     /**
+     * 获取病床列表
+     */
+    @GetMapping("/beds")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllBeds(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            HttpServletRequest request) {
+        validateAdminRole(request);
+        Page<Bed> bedPage = bedService.getBedsByPage(page - 1, pageSize);
+
+        Map<String, Object> data = PageUtils.getPageData(bedPage, page, pageSize, bed -> {
+            return convertToDTO(bed);
+        });
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "获取病床列表成功");
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * 添加新病床
      * POST /admin/beds
      */

@@ -9,4 +9,7 @@ public interface DepartmentMapper {
     
     @Select("SELECT * FROM Department WHERE departmentID = #{departmentId}")
     Department findById(Integer departmentId);
+
+
+
 }

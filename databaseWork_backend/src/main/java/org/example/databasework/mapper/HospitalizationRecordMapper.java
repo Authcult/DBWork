@@ -2,10 +2,10 @@ package org.example.databasework.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.example.databasework.model.HospitalizationRecord;
-import org.example.databasework.model.HospitalizationDailyRecord;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface HospitalizationRecordMapper {
@@ -57,4 +57,23 @@ public interface HospitalizationRecordMapper {
      */
     @Update("UPDATE HospitalizationRecord SET dischargeDate = #{dischargeDate} WHERE recordID = #{recordId}")
     int updateDischargeDate(Integer recordId, LocalDate dischargeDate);
+
+
+    /**
+     * 根据患者ID查询住院记录列表
+     */
+    @Select("SELECT * FROM HospitalizationRecord WHERE patientID = #{patientId}")
+    @Results({
+        @Result(property = "recordID", column = "recordID"),
+        @Result(property = "patient", column = "patientID", javaType = org.example.databasework.model.Patient.class,
+            one = @One(select = "org.example.databasework.mapper.PatientMapper.findById")),
+        @Result(property = "doctor", column = "doctorID", javaType = org.example.databasework.model.Doctor.class,
+            one = @One(select = "org.example.databasework.mapper.DoctorMapper.findDoctorById")
+        ),
+        @Result(property = "ward", column = "wardID", javaType = org.example.databasework.model.Ward.class,
+            one = @One(select = "org.example.databasework.mapper.WardMapper.findById")),
+        @Result(property = "bed", column = "bedID", javaType = org.example.databasework.model.Bed.class,
+            one = @One(select = "org.example.databasework.mapper.BedMapper.findById"))
+    })
+    List<Map<String, Object>> findByPatient(Integer patientId);
 }

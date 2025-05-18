@@ -1,17 +1,20 @@
 package org.example.databasework.controller.doctor;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.databasework.dto.BedDTO;
+import org.example.databasework.dto.WardDTO;
 import org.example.databasework.model.ApiResponse;
-import org.example.databasework.model.Doctor;
 import org.example.databasework.model.HospitalizationDailyRecord;
 import org.example.databasework.model.HospitalizationRecord;
-import org.example.databasework.model.Patient;
 import org.example.databasework.model.Ward;
 import org.example.databasework.model.Bed;
+import org.example.databasework.service.BedService;
 import org.example.databasework.service.DoctorService;
+import org.example.databasework.service.WardService;
 import org.example.databasework.util.JwtUtil;
+import org.example.databasework.util.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +34,15 @@ public class HospitalizationController {
     
     private final DoctorService doctorService;
     private final JwtUtil jwtUtil;
+    private final WardService wardService;
+    private final BedService bedService;
     
     @Autowired
-    public HospitalizationController(DoctorService doctorService, JwtUtil jwtUtil) {
+    public HospitalizationController(DoctorService doctorService, JwtUtil jwtUtil,  WardService wardService, BedService bedService) {
         this.doctorService = doctorService;
         this.jwtUtil = jwtUtil;
+        this.wardService = wardService;
+        this.bedService = bedService;
     }
     
     /**
@@ -54,7 +61,47 @@ public class HospitalizationController {
             throw new RuntimeException("未提供有效的认证信息");
         }
     }
-    
+    /**
+     * 获取病房列表
+     * GET /doctor/wards
+     */
+    @GetMapping("/wards")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllWards(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            HttpServletRequest request) {
+        Integer doctorId = validateDoctorRole(request);
+
+        // 使用PageUtils创建分页请求
+        Page<Ward> wardPage = wardService.getWardsByPage(page - 1, pageSize);
+
+        // 使用PageUtils处理分页结果并转换为DTO
+        Map<String, Object> data = PageUtils.getPageData(wardPage, page, pageSize, this::convertToDTO);
+
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "获取病房列表成功");
+        return ResponseEntity.ok(response);
+    }
+    /**
+     * 获取病床列表
+     * GET /doctor/beds
+     */
+    @GetMapping("/beds")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getAllBeds(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            HttpServletRequest request) {
+        Integer doctorId = validateDoctorRole(request);
+
+        // 使用PageUtils创建分页请求
+        Page<Bed> bedPage = bedService.getBedsByPage(page - 1, pageSize);
+
+        // 使用PageUtils处理分页结果并转换为DTO
+        Map<String, Object> data = PageUtils.getPageData(bedPage, page, pageSize, this::convertBedToDTO);
+        ApiResponse<Map<String, Object>> response = ApiResponse.success(data, "获取病床列表成功");
+        return ResponseEntity.ok(response);
+    }
+
+
     /**
      * 获取当前医生负责的主治住院病人列表
      * GET /doctor/hospitalization-records/my-patients
@@ -298,5 +345,44 @@ public class HospitalizationController {
      */
     private HospitalizationRecord dischargePatient(Integer recordId, LocalDate dischargeDate, Integer doctorId) {
         return doctorService.dischargePatient(recordId, dischargeDate, doctorId);
+    }
+
+    /**
+     * 将Ward实体转换为WardDTO
+     */
+    private WardDTO convertToDTO(Ward ward) {
+        WardDTO dto = new WardDTO();
+        dto.setWardId(ward.getWardID());
+        dto.setLocation(ward.getLocation());
+        dto.setChargeStandard(ward.getChargeStandard());
+
+        if (ward.getDepartment() != null) {
+            dto.setDepartmentId(ward.getDepartment().getDepartmentID());
+            dto.setDepartmentName(ward.getDepartment().getName());
+        }
+
+        return dto;
+    }
+
+    /**
+     * 将Bed实体转换为BedDTO
+     */
+    private BedDTO convertBedToDTO(Bed bed) {
+        BedDTO dto = new BedDTO();
+        dto.setBedId(bed.getBedID());
+        dto.setBedNumber(bed.getBedNumber());
+
+        if (bed.getWard() != null) {
+            Ward ward = bed.getWard();
+            dto.setWardId(ward.getWardID());
+            dto.setWardLocation(ward.getLocation());
+
+            if (ward.getDepartment() != null) {
+                dto.setDepartmentId(ward.getDepartment().getDepartmentID());
+                dto.setDepartmentName(ward.getDepartment().getName());
+            }
+        }
+
+        return dto;
     }
 }

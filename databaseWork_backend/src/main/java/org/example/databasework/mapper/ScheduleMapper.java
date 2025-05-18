@@ -1,10 +1,10 @@
 package org.example.databasework.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.example.databasework.model.Department;
 import org.example.databasework.model.Schedule;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ScheduleMapper {
@@ -53,4 +53,18 @@ public interface ScheduleMapper {
             @Result(property = "endTime", column = "endTime")
     })
     List<Schedule> findAllSchedules();
+
+    @Select("""
+        SELECT * FROM Schedule 
+        WHERE startTime >= CONVERT(DATE, GETDATE()) 
+          AND endTime <= DATEADD(DAY, 7, CONVERT(DATE, GETDATE()))
+          AND workType = '门诊'
+    """)
+    @Results({
+            @Result(property = "doctor", column = "doctorID", javaType = org.example.databasework.model.Doctor.class,
+                    one = @One(select = "org.example.databasework.mapper.DoctorMapper.findDoctorById")),
+            @Result(property = "startTime", column = "startTime"),
+            @Result(property = "endTime", column = "endTime")
+    })
+    List<Map<String, Object>> findAvailableSchedules();
 }

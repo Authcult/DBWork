@@ -6,7 +6,6 @@ import org.example.databasework.model.Doctor;
 import org.example.databasework.model.HospitalizationDailyRecord;
 import org.example.databasework.model.HospitalizationRecord;
 import org.example.databasework.model.OutpatientRegistration;
-import org.example.databasework.model.Prescription;
 import org.example.databasework.model.Schedule;
 import org.example.databasework.service.DoctorService;
 import org.example.databasework.service.HospitalizationService;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {

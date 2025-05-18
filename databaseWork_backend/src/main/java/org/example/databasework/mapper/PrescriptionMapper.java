@@ -12,8 +12,8 @@ public interface PrescriptionMapper {
     /**
      * 创建处方
      */
-    @Insert("INSERT INTO Prescription (registrationID, symptomDescription, diagnosisFee) " +
-           "VALUES (#{registration.registrationID}, #{symptomDescription}, #{diagnosisFee})")
+    @Insert("INSERT INTO Prescription (registrationID, symptomDescription, diagnosisFee,totalDrugFee,TotalAmount) " +
+           "VALUES (#{registration.registrationID}, #{symptomDescription}, #{diagnosisFee}, #{totalDrugFee}, #{totalAmount})")
     @Options(useGeneratedKeys = true, keyProperty = "prescriptionID", keyColumn = "prescriptionID")
     int create(Prescription prescription);
     
@@ -35,11 +35,9 @@ public interface PrescriptionMapper {
     @Results({
         @Result(property = "prescriptionID", column = "prescriptionID"),
         @Result(property = "registration", column = "registrationID", javaType = org.example.databasework.model.OutpatientRegistration.class,
-            one = @One(select = "org.example.databasework.mapper.OutpatientRegistrationMapper.findById")),
-        @Result(property = "items", column = "prescriptionID", javaType = List.class,
-            many = @Many(select = "org.example.databasework.mapper.PrescriptionMapper.findItemsByPrescriptionId"))
+            one = @One(select = "org.example.databasework.mapper.OutpatientRegistrationMapper.findById"))
     })
-    Prescription findByRegistrationId(Integer registrationId);
+    List<Prescription> findByRegistrationId(Integer registrationId);
     
     /**
      * 创建处方项
@@ -49,15 +47,15 @@ public interface PrescriptionMapper {
            "VALUES (#{prescription.prescriptionID}, #{drug.drugID}, #{quantity}, #{usageInstruction})")
     @Options(useGeneratedKeys = true, keyProperty = "itemID", keyColumn = "itemID")
     int createItem(PrescriptionItem prescriptionItem);
-    
+
+
+
     /**
      * 根据处方ID查询处方项列表
      */
-    @Select("SELECT * FROM PrescriptionItem WHERE prescriptionID = #{prescriptionId}")
+    @Select("SELECT ItemID,DrugID,Quantity,UsageInstruction FROM PrescriptionItem WHERE prescriptionID = #{prescriptionId}")
     @Results({
         @Result(property = "itemID", column = "itemID"),
-        @Result(property = "prescription", column = "prescriptionID", javaType = org.example.databasework.model.Prescription.class,
-            one = @One(select = "org.example.databasework.mapper.PrescriptionMapper.findById")),
         @Result(property = "drug", column = "drugID", javaType = org.example.databasework.model.Drug.class,
             one = @One(select = "org.example.databasework.mapper.DrugMapper.findById"))
     })

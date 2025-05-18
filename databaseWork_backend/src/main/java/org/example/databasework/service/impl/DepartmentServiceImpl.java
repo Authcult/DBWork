@@ -1,6 +1,9 @@
 package org.example.databasework.service.impl;
 
+import org.example.databasework.mapper.DepartmentMapper;
+import org.example.databasework.mapper.DoctorMapper;
 import org.example.databasework.model.Department;
+import org.example.databasework.model.Doctor;
 import org.example.databasework.repository.DepartmentRepository;
 import org.example.databasework.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +18,14 @@ import java.util.List;
 public class DepartmentServiceImpl implements DepartmentService {
 
     private final DepartmentRepository departmentRepository;
+    private final DepartmentMapper departmentMapper;
+    private final DoctorMapper doctorMapper;
 
     @Autowired
-    public DepartmentServiceImpl(DepartmentRepository departmentRepository) {
+    public DepartmentServiceImpl(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper, DoctorMapper doctorMapper) {
         this.departmentRepository = departmentRepository;
+        this.departmentMapper = departmentMapper;
+        this.doctorMapper = doctorMapper;
     }
 
     @Override
@@ -56,5 +63,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     public void deleteDepartment(Integer departmentId) {
         Department department = getDepartmentById(departmentId);
         departmentRepository.delete(department);
+    }
+
+    @Override
+    public List<Doctor> getDoctorsByDepartmentId(Integer departmentId) {
+        return doctorMapper.findByDepartmentId(departmentId);
     }
 }

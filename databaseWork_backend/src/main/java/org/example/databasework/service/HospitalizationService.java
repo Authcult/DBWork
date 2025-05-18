@@ -5,11 +5,53 @@ import org.example.databasework.model.HospitalizationRecord;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 住院服务接口
  */
 public interface HospitalizationService {
+    
+    /**
+     * 查询病人自己的住院档案记录
+     * @param patientId 病人ID
+     * @return 住院档案记录列表
+     */
+    List<Map<String, Object>> getPatientHospitalizationRecords(Integer patientId);
+    
+    /**
+     * 获取单个住院档案的详细信息
+     * @param recordId 住院档案ID
+     * @param patientId 病人ID
+     * @return 住院档案详情
+     */
+    Map<String, Object> getHospitalizationRecordDetail(Integer recordId, Integer patientId);
+    
+    /**
+     * 病人进行缴费
+     * @param patientId 病人ID
+     * @param amount 缴费金额
+     * @param paymentType 缴费类型
+     * @param referenceId 引用ID
+     * @param paymentMethod 支付方式
+     * @return 支付结果
+     */
+    Map<String, Object> createPayment(Integer patientId, Double amount, String paymentType, String referenceId, String paymentMethod);
+    
+    /**
+     * 查询病人自己的缴费历史
+     * @param patientId 病人ID
+     * @return 缴费历史列表
+     */
+    List<Map<String, Object>> getPatientPayments(Integer patientId);
+    
+    /**
+     * 查询支付状态
+     * @param paymentId 支付ID
+     * @param patientId 病人ID
+     * @return 支付状态
+     */
+    String getPaymentStatus(Integer paymentId, Integer patientId);
     
     /**
      * 根据医生ID获取住院病人列表

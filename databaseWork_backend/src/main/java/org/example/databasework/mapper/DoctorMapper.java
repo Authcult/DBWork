@@ -60,4 +60,16 @@ public interface DoctorMapper {
             one = @One(select = "org.example.databasework.mapper.DepartmentMapper.findById"))
     })
     List<Doctor> findDoctorsByPage(int offset, int limit);
+
+    @Select("SELECT d.DoctorID,d.Name,Gender,Title,Phone,d.DepartmentID, dept.name as departmentName FROM Doctor d LEFT JOIN Department dept ON d.departmentID = dept.departmentID WHERE d.departmentID = #{departmentId}")
+    @Results({
+        @Result(property = "doctorID", column = "doctorID"),
+        @Result(property = "name", column = "name"),
+        @Result(property = "gender", column = "gender"),
+        @Result(property = "title", column = "title"),
+        @Result(property = "phone", column = "phone"),
+        @Result(property = "department", column = "departmentID", javaType = Department.class,
+            one = @One(select = "org.example.databasework.mapper.DepartmentMapper.findById"))
+    })
+    List<Doctor> findByDepartmentId(Integer departmentId);
 }

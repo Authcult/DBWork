@@ -1,6 +1,7 @@
 package org.example.databasework.service;
 
 import org.example.databasework.model.Department;
+import org.example.databasework.model.Doctor;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -47,4 +48,6 @@ public interface DepartmentService {
      * @param departmentId 科室ID
      */
     void deleteDepartment(Integer departmentId);
+
+    List<Doctor> getDoctorsByDepartmentId(Integer departmentId);
 }
