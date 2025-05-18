@@ -83,8 +83,8 @@ const adminOptions = [
   background-color: #409eff;
   color: white;
   text-align: center;
-  font-size: 20px;
-  padding: 8px 0;
+  font-size: 15px;
+  padding: 0;
 }
 
 .welcome-text {
