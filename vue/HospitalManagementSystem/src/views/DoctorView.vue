@@ -7,6 +7,9 @@
       <el-main>
         <p>欢迎, 医生! 这是医生专属内容区域。</p>
         <!-- TODO: Add doctor specific components and features here, e.g., patient list, appointment schedule -->
+        <el-button @click="$router.push('/doctor/profile')">查看个人信息</el-button>
+        <el-button @click="$router.push('/doctor/schedule')">查看排班</el-button>
+        <el-button @click="$router.push('/doctor/registrations')">门诊接诊</el-button>
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>

@@ -1,0 +1,181 @@
+<template>
+    <div class="consultation-detail">
+      <!-- 返回主页按钮 -->
+      <div class="toolbar">
+        <el-button @click="goBack">返回主页</el-button>
+      </div>
+      <el-card>
+        <template #header>
+          <span>接诊详情</span>
+        </template>
+        <div>
+          <el-descriptions title="患者信息" :column="2">
+            <el-descriptions-item label="患者ID">{{ patientId }}</el-descriptions-item>
+            <!-- 可添加更多患者信息 -->
+          </el-descriptions>
+          <el-divider />
+          <el-form :model="prescriptionForm" label-width="120px">
+            <el-form-item label="症状描述">
+              <el-input type="textarea" v-model="prescriptionForm.symptomDescription" />
+            </el-form-item>
+            <el-form-item label="诊疗费">
+              <el-input-number v-model="prescriptionForm.diagnosisFee" :min="0" />
+            </el-form-item>
+            <el-form-item label="处方明细">
+                <el-button type="primary" @click="addPrescriptionItem">添加药品</el-button>
+                <div v-for="(item, index) in prescriptionForm.items" :key="index" style="margin-top: 10px;">
+                  <el-select
+                    v-model="item.drugId"
+                    placeholder="请选择药品"
+                    style="width: 200px; margin-right: 10px;"
+                    >
+                    <el-option
+                        v-for="drug in drugList"
+                        :key="drug.drugId"
+                        :label="drug.name"
+                        :value="drug.drugId"
+                        />
+                  </el-select>
+
+                  <el-input-number
+                    v-model="item.quantity"
+                    :min="1"
+                    placeholder="数量"
+                    style="margin-right: 10px;"
+                    />
+
+                  <el-input
+                    v-model="item.usageInstruction"
+                    placeholder="用法"
+                    style="width: 300px;"
+                    />
+
+                    <el-button type="danger" @click="removePrescriptionItem(index)">删除</el-button>
+                </div>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="submitPrescription">提交处方</el-button>
+              <el-button @click="completeCurrentConsultation">完成接诊</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-card>
+      <!-- 提示框 -->
+      <el-dialog v-model="dialogVisible" title="提示">
+        <p>{{ dialogMessage }}</p>
+        <template #footer>
+          <el-button @click="dialogVisible = false">关闭</el-button>
+        </template>
+      </el-dialog>
+    </div>
+  </template>
+  
+  <script setup>
+  import { ref, onMounted } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import { getPatientHistory, createPrescription, completeConsultation,getDrugs } from '@/api/doctor/consultation'
+  import { ElMessage } from 'element-plus'
+  
+  const route = useRoute()
+  const router = useRouter()
+  // 药品列表
+const drugList = ref([])
+  const registrationId = route.params.registrationId
+  const patientId = route.params.patientId
+  
+  const prescriptionForm = ref({
+    registrationId: registrationId,
+    symptomDescription: '',
+    diagnosisFee: 0,
+    items: []
+  })
+  
+  const addPrescriptionItem = () => {
+    prescriptionForm.value.items.push({
+      drugId: '',
+      quantity: 1,
+      usageInstruction: ''
+    })
+  }
+  
+  const removePrescriptionItem = (index) => {
+    prescriptionForm.value.items.splice(index, 1)
+  }
+  
+  const submitPrescription = async () => {
+    try {
+      const res = await createPrescription(prescriptionForm.value)
+      if (res.success) {
+        ElMessage.success('处方开具成功')
+      } else {
+        ElMessage.error('处方开具失败')
+      }
+    } catch (error) {
+      ElMessage.error('请求开具处方失败')
+    }
+  }
+  
+  const completeCurrentConsultation = async () => {
+    try {
+      const res = await completeConsultation(registrationId)
+      if (res.success) {
+        ElMessage.success('接诊完成')
+        router.push('/doctor')
+      } else {
+        ElMessage.error('完成接诊失败')
+      }
+    } catch (error) {
+      ElMessage.error('请求完成接诊失败')
+    }
+  }
+  
+  // 新增返回主页方法
+  const goBack = () => {
+    router.push('/doctor/registrations')
+  }
+
+  // 新增提示框相关变量和方法
+  const dialogVisible = ref(false)
+  const dialogMessage = ref('')
+  const showDialog = (message) => {
+    dialogMessage.value = message
+    dialogVisible.value = true
+  }
+  
+  onMounted(async () => {
+    try {
+        const res = await getDrugs()
+        if (res.success) {
+            drugList.value = res.data.items
+        } else {
+            ElMessage.error('获取药品列表失败')
+        }
+    } catch (error) {
+        ElMessage.error('请求药品列表失败')
+    }
+})
+  </script>
+  
+  <style scoped>
+  .consultation-detail {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f5f7fa; /* 参考 DrugManagement.vue 的背景色 */
+  }
+
+  .toolbar {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .el-card {
+    flex: 1;
+    overflow: auto;
+  }
+  </style>

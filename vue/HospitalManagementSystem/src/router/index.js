@@ -82,6 +82,31 @@ const routes = [
     name: 'AdminManagement',
     component: () => import('@/views/admin/AdminManagement.vue'),
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+   path:'/doctor/profile',
+   name:'ShowProfile',
+   component:()=>import('@/views/doctor/ShowProfile.vue'),
+   meta: { requiresAuth: true, role: 'doctor' } 
+  },
+  {
+   path:'/doctor/schedule',
+   name:'ShowSchedule',
+   component:()=>import('@/views/doctor/ShowSchedule.vue'),
+   meta: { requiresAuth: true, role: 'doctor' } 
+  },
+  {
+    path: '/doctor/registrations',
+    name: 'RegistrationList',
+    component: () => import('@/views/doctor/RegistrationList.vue'),
+    meta: { requiresAuth: true, role: 'doctor' }
+  },
+  {
+    path: '/doctor/consultation/:registrationId/:patientId',
+    name: 'ConsultationDetail',
+    component: () => import('@/views/doctor/ConsultationDetail.vue'),
+    props: true,
+    meta: { requiresAuth: true, role: 'doctor' }
   }
 ];
 
