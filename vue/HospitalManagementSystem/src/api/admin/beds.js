@@ -9,7 +9,7 @@ export function getBeds(wardId) {
 
 export function addBed(wardId, data) {
   return request({
-    url: `/admin/wards/${wardId}/beds`,
+    url: `/admin/beds`, 
     method: 'post',
     data
   })

@@ -72,8 +72,17 @@ const routes = [
     meta: { requiresAuth: true, role: 'admin' }
   },
   {
-    
-  } 
+    path: '/beds/:wardId',
+    name: 'BedsManagement',
+    component: () => import('@/views/admin/BedsManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/admin/admins',
+    name: 'AdminManagement',
+    component: () => import('@/views/admin/AdminManagement.vue'),
+    meta: { requiresAuth: true, role: 'admin' }
+  }
 ];
 
 const router = createRouter({
