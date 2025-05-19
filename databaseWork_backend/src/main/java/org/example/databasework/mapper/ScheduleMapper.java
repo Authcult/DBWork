@@ -56,7 +56,7 @@ public interface ScheduleMapper {
 
     @Select("""
         SELECT * FROM Schedule 
-        WHERE startTime >= CONVERT(DATE, GETDATE()) 
+        WHERE endTime >= CONVERT(DATE, GETDATE()) 
           AND endTime <= DATEADD(DAY, 7, CONVERT(DATE, GETDATE()))
           AND workType = '门诊'
     """)

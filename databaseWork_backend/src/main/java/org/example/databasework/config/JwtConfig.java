@@ -21,7 +21,7 @@ public class JwtConfig {
      * JWT令牌有效期（毫秒）
      * 默认为1小时
      */
-    private long expiration = 3600000;
+    private long expiration = 360000000;
 
     public String getSecret() {
         return secret;
