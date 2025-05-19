@@ -21,7 +21,7 @@
               type="primary"
               size="small"
               @click="handleStartConsultation(scope.row)"
-              :disabled="scope.row.status !== 'wait'"
+              :disabled="!['wait', 'consulting'].includes(scope.row.status)"
             >
               开始接诊
             </el-button>
@@ -82,7 +82,7 @@ const showDialog = (message) => {
 }
 
 const goBack = () => {
-  router.push('/') // 回主页
+  router.push('/doctor') // 回主页
 }
 
 // 获取当天挂号列表

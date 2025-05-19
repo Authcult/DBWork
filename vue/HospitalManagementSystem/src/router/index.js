@@ -107,6 +107,18 @@ const routes = [
     component: () => import('@/views/doctor/ConsultationDetail.vue'),
     props: true,
     meta: { requiresAuth: true, role: 'doctor' }
+  },
+  {
+    path: '/doctor/inpatients',
+    name: 'Inpatients',
+    component: () => import('@/views/doctor/Inpatients.vue'),
+    meta: { requiresAuth: true, role: 'doctor' }
+  },
+  {
+    path: '/doctor/inpatients/:recordId',
+    name: 'HospitalizationDetail',
+    component: () => import('@/views/doctor/HospitalizationDetail.vue'),
+    meta: { requiresAuth: true, role: 'doctor' }
   }
 ];
 
