@@ -3,13 +3,13 @@ spring:
     name: databaseWork
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.253.63.46:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
     password: 123
 
 jakarta.persistence:
   jdbc:
     driver: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.253.63.46:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
     password: 123
