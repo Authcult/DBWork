@@ -7,6 +7,7 @@
       <el-main>
         <p>欢迎, 患者! 这是患者专属内容区域。</p>
         <!-- TODO: Add patient specific components and features here, e.g., appointment history, medical records -->
+        <el-button @click="$router.push('/patient/profile')">个人信息</el-button>
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>
