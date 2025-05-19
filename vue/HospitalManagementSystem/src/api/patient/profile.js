@@ -18,10 +18,10 @@ export function updatePatientProfile(data) {
 }
 
 // 修改密码
-export function changePatientPassword(data) {
+export function changePatientPassword(data,config) {
   return request({
     url: '/patient/profile/change-password',
     method: 'post',
-    data
+    params: config?.params // 确保参数作为query参数传递
   })
 }

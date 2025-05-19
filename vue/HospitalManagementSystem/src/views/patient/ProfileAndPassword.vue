@@ -98,15 +98,19 @@
       }
     })
   }
-  
+
   const submitPassword = () => {
     if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
       ElMessage.error('两次输入的新密码不一致')
       return
     }
-    changePatientPassword({
-      currentPassword: passwordForm.value.currentPassword,
-      newPassword: passwordForm.value.newPassword
+
+    // 修改为使用query参数方式调用API
+    changePatientPassword({}, {
+      params: {
+        currentPassword: passwordForm.value.currentPassword,
+        newPassword: passwordForm.value.newPassword
+      }
     }).then(res => {
       if (res.success) {
         ElMessage.success('密码修改成功')
@@ -114,7 +118,8 @@
       } else {
         ElMessage.error('密码修改失败')
       }
-    }).catch(() => {
+    }).catch((error) => {
+      console.error('修改密码请求失败:', error)
       ElMessage.error('请求失败，请稍后重试')
     })
   }
