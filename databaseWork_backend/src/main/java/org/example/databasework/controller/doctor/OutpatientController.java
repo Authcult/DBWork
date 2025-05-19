@@ -218,7 +218,10 @@ public class OutpatientController {
 
         // 从请求体中获取处方信息
         String symptomDescription = (String) prescriptionRequest.get("symptomDescription");
-        Double diagnosisFee = (Double) prescriptionRequest.get("diagnosisFee");
+        Object diagnosisFeeObj = prescriptionRequest.get("diagnosisFee");
+        Double diagnosisFee = (diagnosisFeeObj instanceof Number)
+                ? ((Number) diagnosisFeeObj).doubleValue()
+                : null;
         List<Map<String, Object>> items = (List<Map<String, Object>>) prescriptionRequest.get("items");
 
         // 创建处方

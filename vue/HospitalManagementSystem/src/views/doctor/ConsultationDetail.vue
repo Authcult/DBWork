@@ -22,7 +22,7 @@
               <el-input type="textarea" v-model="prescriptionForm.symptomDescription" />
             </el-form-item>
             <el-form-item label="诊疗费">
-              <el-input-number v-model="prescriptionForm.diagnosisFee" :min="0" />
+              <el-input-number v-model="prescriptionForm.diagnosisFee" :min="0":step="0.01":precision="2" />
             </el-form-item>
   
             <el-form-item label="处方明细">
@@ -107,7 +107,7 @@
   const prescriptionForm = ref({
     registrationId: registrationId,
     symptomDescription: '',
-    diagnosisFee: 0,
+    diagnosisFee: 0.00,
     items: []
   })
   
@@ -130,7 +130,7 @@
     try {
       const res = await createPrescription(registrationId, {
             symptomDescription: prescriptionForm.value.symptomDescription,
-            diagnosisFee: parseFloat(prescriptionForm.value.diagnosisFee), // 确保是 double 类型
+            diagnosisFee: prescriptionForm.value.diagnosisFee,
             items: prescriptionForm.value.items.map(item => ({
                 drugId: item.drugId,
                 quantity: item.quantity,
