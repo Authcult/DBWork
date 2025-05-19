@@ -34,13 +34,13 @@ export function getPatientHistory(patientId) {
 }
 
 // 开具处方
-export function createPrescription(data) {
-  return request({
-    url: '/doctor/prescriptions',
-    method: 'post',
-    data
-  })
-}
+export function createPrescription(registrationId, data) {
+    return request({
+      url: `/doctor/patients/${registrationId}/prescription`,
+      method: 'post',
+      data
+    })
+  }
 // 获取药品列表
 export const getDrugs = () => {
     return request({
