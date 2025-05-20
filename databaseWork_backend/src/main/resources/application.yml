@@ -3,13 +3,19 @@ spring:
     name: databaseWork
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+#    url: jdbc:sqlserver://databasehome.database.windows.net:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+#    username: cui
+#    password: 6q/3]029ak,W|IFw8lG#1UOA7gVopQ:f
+    url: jdbc:sqlserver://localhost:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
-    password:  123
+    password: 123
 
 jakarta.persistence:
   jdbc:
     driver: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+#    url: jdbc:sqlserver://databasehome.database.windows.net:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
+#    username: cui
+#    password: 6q/3]029ak,W|IFw8lG#1UOA7gVopQ:f
+    url: jdbc:sqlserver://localhost:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
-    password:  123
+    password: 123
