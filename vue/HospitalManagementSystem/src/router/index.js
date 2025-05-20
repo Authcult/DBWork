@@ -137,6 +137,12 @@ const routes = [
     name: 'ConsultationRecords',
     component: () => import('@/views/patient/ConsultationRecords.vue'),
     meta: { requiresAuth: true, role: 'patient' }
+  },
+  {
+    path: '/patient/payments',
+    name: 'PatientPayments',
+    component: () => import('@/views/patient/Payment.vue'),
+    meta: { requiresAuth: true, role: 'patient' }
   }
 ];
 
