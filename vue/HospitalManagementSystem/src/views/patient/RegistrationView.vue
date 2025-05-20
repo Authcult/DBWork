@@ -81,6 +81,7 @@
     loading.value = true
     try {
       const res = await getAvailableSlots()
+      console.log("获取可用时间段返回：",res)
       if (res.success) {
         // 提取并映射结构化数据
         availableSlots.value = res.data.list.map(item => ({

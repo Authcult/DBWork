@@ -9,6 +9,7 @@
         <!-- TODO: Add patient specific components and features here, e.g., appointment history, medical records -->
         <el-button @click="$router.push('/patient/profile')">个人信息</el-button>
         <el-button @click="$router.push('/patient/registrations')">门诊挂号与记录</el-button>
+        <el-button @click="$router.push('/patient/records')">就诊记录与住院档案</el-button>
         <el-button @click="logout">退出登录</el-button>
       </el-main>
     </el-container>

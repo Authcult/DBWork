@@ -5,11 +5,11 @@ spring:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
-    password: 123
+    password:  123
 
 jakarta.persistence:
   jdbc:
     driver: com.microsoft.sqlserver.jdbc.SQLServerDriver
     url: jdbc:sqlserver://10.252.172.74:1433;databaseName=HospitalManagementSystem;encrypt=true;trustServerCertificate=true
     username: sa
-    password: 123
+    password:  123

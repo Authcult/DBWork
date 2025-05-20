@@ -67,7 +67,7 @@ public class HospitalizationServiceImpl implements HospitalizationService {
                 Map.entry("bedId", record.getBed().getBedID()),
                 Map.entry("bedNumber", record.getBed().getBedNumber()),
                 Map.entry("admissionDate", record.getAdmissionDate().toString()),
-                Map.entry("dischargeDate", record.getDischargeDate() == null ? null : record.getDischargeDate().toString()),
+                Map.entry("dischargeDate", record.getDischargeDate() == null ? "null" : record.getDischargeDate().toString()),
                 Map.entry("dailyRecords", dailyRecords)
         );
     }
