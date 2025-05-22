@@ -10,6 +10,11 @@ This template should help get you started developing with Vue 3 in Vite.
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
+## nvm
+https://github.com/coreybutler/nvm-windows/releases/download/1.2.0/nvm-setup.zip
+
+
+
 ## Project Setup
 
 ```sh
