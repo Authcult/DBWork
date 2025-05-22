@@ -121,3 +121,7 @@ npm run build
 - **管理员账户**:
   - 用户名: admin
   - 密码: admin123
+  - 医生账户：admin
+  - 医生密码：admin123
+  - 病人账户：admin
+  - 病人密码: admin123
